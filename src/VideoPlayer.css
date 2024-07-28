@@ -44,6 +44,13 @@
   cursor: pointer;
   margin-top: -1px; /* //Offset the thumb to align with the track */
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 999;
+  opacity: 0;
+}
+
+.video-player input[type="range"]:hover::-webkit-slider-thumb {
+  opacity: 1;
 }
 
 .video-player input[type="range"]::-moz-range-track {
@@ -111,6 +118,7 @@
   top: 50%;
   transform: translateY(-50%);
   height: 10px;
+  cursor: pointer;
 }
 
 .indicator::before {
@@ -118,10 +126,12 @@
   position: absolute;
   top: 50%;
   left: 0;
-  transform: translate(-50%, -50%);
+  transform: translateY(-50%);
   width: 2px;
   height: 20px;
   background: #959595;
+  border-radius: 15px;
+  transition: height 0.3s ease, width 0.3s ease;
 }
 
 .indicator::after {
@@ -129,14 +139,22 @@
   position: absolute;
   top: 50%;
   right: 0;
-  transform: translate(-50%, -50%);
+  transform: translateY(-50%);
   width: 2px;
   height: 20px;
   background: #959595;
+  border-radius: 15px;
+  transition: height 0.3s ease, width 0.3s ease;
 }
 
 .indicator.clicked,
 .indicator.clicked::after,
 .indicator.clicked::before {
   background: #f36f24;
+}
+
+.indicator.clicked::after,
+.indicator.clicked::before {
+  width: 3px;
+  height: 35px;
 }

@@ -8,11 +8,22 @@ const formatTime = (seconds) => {
   return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
 };
 
-const Indicator = ({ start, end, duration }) => {
-  const [clicked, setClicked] = useState(false);
+const Indicator = ({
+  id,
+  start,
+  end,
+  duration,
+  highlighted,
+  setHighlighted,
+  setCurrentTime,
+  handleSliderChange,
+}) => {
+  // const [clicked, setClicked] = useState(highlighted);
 
   const handleClick = () => {
-    setClicked(!clicked);
+    setHighlighted(id);
+    setCurrentTime(start);
+    handleSliderChange({ target: { value: (start / duration) * 100 } });
   };
 
   const width = ((end - start) / duration) * 100;
@@ -20,7 +31,7 @@ const Indicator = ({ start, end, duration }) => {
 
   return (
     <div
-      className={`indicator ${clicked ? "clicked" : ""}`}
+      className={`indicator ${highlighted ? "clicked" : ""}`}
       style={{
         left: `${indicatorPercentage + 1}%`,
         width: `${width}%`,
@@ -45,6 +56,7 @@ const VideoPlayer = ({ src, highlightTime }) => {
   };
 
   const handleSliderChange = (event) => {
+    console.log(event.target.value);
     const newTime = (event.target.value / 100) * duration;
     videoRef.current.currentTime = newTime;
     setCurrentTime(newTime);
@@ -71,7 +83,13 @@ const VideoPlayer = ({ src, highlightTime }) => {
     };
   }, []);
 
+  useEffect(() => {
+    console.log("duration", duration);
+  }, [duration]);
+
   const percentage = (currentTime / duration) * 100;
+
+  const [highlighted, setHighlighted] = useState(0);
 
   return (
     <div className="video-player">
@@ -90,10 +108,20 @@ const VideoPlayer = ({ src, highlightTime }) => {
         />
         {highlightTime.map((time, index) => (
           <Indicator
-            start={time[0]}
-            end={time[1]}
+            id={time.id}
+            start={time.start}
+            end={time.end}
             duration={duration}
-            key={index}
+            key={time.id}
+            highlighted={
+              (highlighted === time.id &&
+                currentTime >= time.start &&
+                currentTime < time.end) ||
+              (currentTime >= time.start && currentTime < time.end)
+            }
+            setHighlighted={setHighlighted}
+            setCurrentTime={setCurrentTime}
+            handleSliderChange={handleSliderChange}
           />
         ))}
       </div>
